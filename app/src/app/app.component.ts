@@ -49,6 +49,10 @@ export class AppComponent {
   isSubmittingContact = signal(false);
   contactSubmitted = signal(false);
 
+  // Offer details
+  bonusOptions = [0, 10, 20, 30, 40, 50, 60, 70, 75];
+  selectedBonus = signal(70);
+
   onSubmit(): void {
     const regNumber = this.regInput().replace(/\s/g, '').toUpperCase();
     if (!regNumber) return;
@@ -62,6 +66,7 @@ export class AppComponent {
     this.http.get<CarInsuranceQuote>(`${this.apiUrl}/bilforsikring/${regNumber}/tilbud`).subscribe({
       next: (quote) => {
         this.result.set(quote);
+        this.selectedBonus.set(quote.bonus);
         this.isLoading.set(false);
         this.hasSearched.set(true);
       },

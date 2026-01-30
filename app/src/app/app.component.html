@@ -50,6 +50,19 @@
             <span class="spec-value">{{ result()!.coverage }}</span>
           </div>
         </div>
+
+        <div class="offer-details">
+          <h3>Tilbudsdetaljer</h3>
+          <div class="detail-row">
+            <label for="bonus-select">Bonus</label>
+            <select id="bonus-select" [ngModel]="selectedBonus()" (ngModelChange)="selectedBonus.set($event)"
+              class="bonus-select">
+              @for (option of bonusOptions; track option) {
+              <option [value]="option">{{ option }} %</option>
+              }
+            </select>
+          </div>
+        </div>
         <div class="price-section">
           <span class="price-label">Månedspris fra</span>
           <span class="price-value">{{ formatPrice(result()!.insurancePrice) }}</span>
