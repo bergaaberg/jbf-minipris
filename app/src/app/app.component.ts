@@ -9,6 +9,15 @@ interface CarInsuranceQuote {
   year: number;
   insurancePrice: number;
   coverage: string;
+  bonus: number;
+  deductible: number;
+  coverageOptions: CoverageOption[];
+}
+
+interface CoverageOption {
+  name: string;
+  price: number;
+  description: string;
 }
 
 interface ContactRequest {

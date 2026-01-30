@@ -1,4 +1,5 @@
 using Minipris.Features.Cars.Models;
+using Minipris.Features.Cars.Requests;
 
 namespace Minipris.Features.Cars;
 
@@ -37,30 +38,35 @@ public class CarService
                 Model = car.Model,
                 Year = car.Year,
                 InsurancePrice = price,
-                Coverage = "Kasko"
+                Coverage = "Kasko",
+                Bonus = 70,
+                Deductible = 4000,
+                CoverageOptions = GenerateCoverageOptions(price)
             });
         }
 
-        var randomQuote = GenerateRandomQuote(normalized);
-        return Task.FromResult<CarInsuranceQuote?>(randomQuote);
+        return Task.FromResult<CarInsuranceQuote?>(null);
     }
 
-    private static CarInsuranceQuote GenerateRandomQuote(string regNumber)
+    public static Task<CarInsuranceQuote> GetEstimate(CarEstimateRequest request)
     {
-        var makes = new[] { "Ford", "Audi", "Mercedes", "Nissan", "Mazda" };
-        var models = new[] { "Focus", "A4", "C-klasse", "Qashqai", "CX-5" };
-        var index = Random.Shared.Next(makes.Length);
+        var price = CalculateRandomPrice();
 
-        return new CarInsuranceQuote
+        return Task.FromResult(new CarInsuranceQuote
         {
-            RegNumber = FormatRegNumber(regNumber),
-            Make = makes[index],
-            Model = models[index],
-            Year = 2015 + Random.Shared.Next(9),
-            InsurancePrice = CalculateRandomPrice(),
-            Coverage = "Kasko"
-        };
+            RegNumber = "ESTIMAT",
+            Make = request.Make,
+            Model = request.Model,
+            Year = request.Year,
+            InsurancePrice = price,
+            Coverage = "Kasko",
+            Bonus = 70,
+            Deductible = 4000,
+            CoverageOptions = GenerateCoverageOptions(price)
+        });
     }
+
+
 
     private static int CalculateRandomPrice()
     {
@@ -73,5 +79,30 @@ public class CarService
     {
         var clean = regNumber.Replace(" ", "").ToUpperInvariant();
         return clean.Length >= 3 ? $"{clean[..2]} {clean[2..]}" : clean;
+    }
+
+    private static List<CoverageOption> GenerateCoverageOptions(int kaskoPrice)
+    {
+        return
+        [
+            new()
+            {
+                Name = "Ansvar",
+                Price = (int)(kaskoPrice * 0.6),
+                Description = "Dekker skade på andres kjøretøy, eiendom og personer."
+            },
+            new()
+            {
+                Name = "Delkasko",
+                Price = (int)(kaskoPrice * 0.8),
+                Description = "Inkluderer ansvar, pluss tyveri, brann, og glasskade."
+            },
+            new()
+            {
+                Name = "Kasko",
+                Price = kaskoPrice,
+                Description = "Full dekning inkludert skade på eget kjøretøy ved kollisjon/utforkjøring."
+            }
+        ];
     }
 }
