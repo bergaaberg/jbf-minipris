@@ -1,0 +1,114 @@
+// JBF Brand Variables
+$primary: #00383d;
+$primary-hover: #4d7477;
+$secondary: #f2f6f6;
+$accent: #fd4f1e;
+$text: #333333;
+$sea-dark: #071d22;
+$background: #fafafa;
+$success-background: #e4ffe8;
+
+// Font Face
+@font-face {
+  font-family: "Open Sans";
+  src:
+    local("Open Sans"),
+    url("./assets/fonts/OpenSans-VariableFont_wdth,wght.ttf") format("truetype");
+  font-display: swap;
+}
+
+// Reset and Base
+* {
+  box-sizing: border-box;
+  font-family: "Open Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: $background;
+  color: $text;
+}
+
+body {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
+  letter-spacing: 0;
+}
+
+// Typography
+h1 {
+  font-family: "Open Sans", ui-sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 41px;
+  letter-spacing: 0;
+  color: $primary;
+  margin: 0 0 1rem;
+}
+
+h2 {
+  font-family: "Open Sans", ui-sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 34px;
+  letter-spacing: 0;
+  color: $primary;
+  margin: 0 0 0.75rem;
+}
+
+h3 {
+  font-family: "Open Sans", ui-sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 29px;
+  letter-spacing: 0;
+  color: $primary;
+  margin: 0 0 0.5rem;
+}
+
+h4 {
+  font-family: "Open Sans", ui-sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0;
+  color: $primary;
+  margin: 0 0 0.5rem;
+}
+
+p {
+  margin: 0 0 1rem;
+  color: $sea-dark;
+}
+
+// Mobile responsive typography
+@media screen and (max-width: 700px) {
+  h1 {
+    font-size: 30px;
+    line-height: 36px;
+  }
+
+  h2 {
+    font-size: 28px;
+    line-height: 34px;
+  }
+
+  h3 {
+    font-size: 20px;
+    line-height: 24px;
+  }
+
+  h4 {
+    font-size: 18px;
+    line-height: 22px;
+  }
+
+  body {
+    font-size: 14px;
+    line-height: 22px;
+  }
+}

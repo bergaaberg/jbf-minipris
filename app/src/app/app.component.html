@@ -1,0 +1,142 @@
+<div class="page-container">
+  <header class="header">
+    <img src="assets/images/jbf-logo.svg" alt="JBF Forsikring" class="logo" />
+  </header>
+
+  <div class="intro-container">
+    <div class="icon-wrapper">
+      <img src="assets/icons/car.svg" alt="Bil" class="car-icon" />
+    </div>
+
+    <h1>Få pris på forsikring</h1>
+    <p class="subtitle">Skriv inn registreringsnummeret for å få et pristilbud på bilforsikring.</p>
+
+    <form (ngSubmit)="onSubmit()" class="search-form">
+      <div class="input-group">
+        <label for="regNumber" class="visually-hidden">Registreringsnummer</label>
+        <input
+          type="text"
+          id="regNumber"
+          [(ngModel)]="regInput"
+          name="regNumber"
+          placeholder="F.eks. AB 12345"
+          class="reg-input"
+          maxlength="8"
+          autocomplete="off"
+        />
+      </div>
+      <button type="submit" class="submit-btn" [disabled]="isLoading() || !regInput()">
+        @if (isLoading()) {
+          <span class="loading-spinner"></span>
+          Søker...
+        } @else {
+          Få pris
+        }
+      </button>
+    </form>
+
+    @if (error()) {
+      <div class="error-card">
+        <p>{{ error() }}</p>
+      </div>
+    }
+
+    @if (hasSearched() && result()) {
+      <div class="result-card">
+        <div class="result-header">
+          <span class="result-reg">{{ result()!.regNumber }}</span>
+        </div>
+        <div class="result-details">
+          <h2 class="car-name">{{ result()!.make }} {{ result()!.model }}</h2>
+          <div class="car-specs">
+            <div class="spec">
+              <span class="spec-label">Årsmodell</span>
+              <span class="spec-value">{{ result()!.year }}</span>
+            </div>
+            <div class="spec">
+              <span class="spec-label">Dekning</span>
+              <span class="spec-value">{{ result()!.coverage }}</span>
+            </div>
+          </div>
+          <div class="price-section">
+            <span class="price-label">Månedspris fra</span>
+            <span class="price-value">{{ formatPrice(result()!.insurancePrice) }}</span>
+            <span class="price-yearly">{{ formatYearlyPrice(result()!.insurancePrice) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Action Card -->
+      @if (!contactSubmitted()) {
+        <div class="action-card">
+          <div class="action-card-header">
+            <img src="assets/icons/phone.svg" alt="" class="action-icon" />
+            <div class="action-card-title">
+              <h3>Få tilbudet tilsendt</h3>
+              <p>Vi kontakter deg med et komplett tilbud.</p>
+            </div>
+          </div>
+
+          <form (ngSubmit)="onContactSubmit()" class="contact-form">
+            <div class="input-row">
+              <div class="input-field">
+                <label for="phone">
+                  <img src="assets/icons/phone.svg" alt="" class="field-icon" />
+                  Telefon
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  [(ngModel)]="phoneNumber"
+                  name="phone"
+                  placeholder="Ditt telefonnummer"
+                  autocomplete="tel"
+                />
+              </div>
+              <div class="input-field">
+                <label for="email">
+                  <img src="assets/icons/envelope.svg" alt="" class="field-icon" />
+                  E-post
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  [(ngModel)]="email"
+                  name="email"
+                  placeholder="Din e-postadresse"
+                  autocomplete="email"
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              class="contact-btn"
+              [disabled]="isSubmittingContact() || !isContactFormValid">
+              @if (isSubmittingContact()) {
+                <span class="loading-spinner"></span>
+                Sender...
+              } @else {
+                Send meg tilbudet
+              }
+            </button>
+          </form>
+        </div>
+      } @else {
+        <div class="success-card">
+          <img src="assets/icons/check.svg" alt="" class="success-icon" />
+          <h3>Takk for din henvendelse!</h3>
+          <p>Vi tar kontakt med deg snart med et komplett forsikringstilbud for din {{ result()!.make }} {{ result()!.model }}.</p>
+        </div>
+      }
+    }
+
+    <p class="disclaimer">
+      Prisestimatet er veiledende. Endelig pris avhenger av førers alder, bosted og kjørehistorikk.
+    </p>
+  </div>
+
+  <footer class="footer">
+    <img src="assets/images/jbf-logo.svg" alt="JBF Forsikring" class="footer-logo" />
+    <p>Jernbanepersonalets Bank og Forsikring</p>
+  </footer>
+</div>
