@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Minipris/Minipris.csproj" />
+  <Project Path="Tests/Tests.csproj" />
+</Solution>
