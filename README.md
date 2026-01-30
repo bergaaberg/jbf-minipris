@@ -15,14 +15,17 @@ jbf-minipris/
 │   ├── package.json
 │   └── proxy.conf.json    # API-proxy for utvikling
 │
-└── api/                    # .NET minimal API backend
-    ├── Features/
-    │   ├── Cars/          # Bilforsikringstilbud
-    │   ├── Contact/       # Håndtering av kontaktskjema
-    ├── Properties/
-    │   └── launchSettings.json
-    ├── Program.cs
-    └── Jbf.Minipris.Api.csproj
+└── backend/
+    ├── Minipris/           # .NET minimal API backend
+    │   ├── Features/
+    │   │   ├── Cars/          # Bilforsikringstilbud
+    │   │   ├── Contact/       # Håndtering av kontaktskjema
+    │   ├── Properties/
+    │   │   └── launchSettings.json
+    │   ├── Program.cs
+    │   └── Minipris.csproj
+    ├── Tests/
+    └── Minipris.slnx
 ```
 
 ## Kjør applikasjonen
@@ -30,7 +33,7 @@ jbf-minipris/
 ### Backend (.NET API)
 
 ```bash
-cd api
+cd backend/Minipris
 dotnet run
 ```
 
