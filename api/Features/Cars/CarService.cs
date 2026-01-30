@@ -16,11 +16,11 @@ public class CarService
 
     private static readonly Dictionary<string, int> BasePrices = new()
     {
-        ["AB12345"] = 685,
-        ["CD67890"] = 495,
-        ["EF11111"] = 890,
-        ["GH22222"] = 745,
-        ["IJ33333"] = 620
+        ["AB12345"] = 2400,
+        ["CD67890"] = 1650,
+        ["EF11111"] = 3200,
+        ["GH22222"] = 2600,
+        ["IJ33333"] = 2100
     };
 
     public static Task<CarInsuranceQuote?> GetQuote(string regNumber)
@@ -30,7 +30,10 @@ public class CarService
 
         if (car is not null)
         {
-            var price = BasePrices.GetValueOrDefault(normalized, CalculateRandomPrice());
+            var basePrice = BasePrices.GetValueOrDefault(normalized, GenerateBasePrice());
+            var bonus = 70; // Standard startbonus
+            var price = CalculatePremium(basePrice, bonus);
+
             return Task.FromResult<CarInsuranceQuote?>(new CarInsuranceQuote
             {
                 RegNumber = FormatRegNumber(car.RegNumber),
@@ -39,9 +42,9 @@ public class CarService
                 Year = car.Year,
                 InsurancePrice = price,
                 Coverage = "Kasko",
-                Bonus = 70,
+                Bonus = bonus,
                 Deductible = 4000,
-                CoverageOptions = GenerateCoverageOptions(price)
+                CoverageOptions = GenerateCoverageOptions(basePrice, bonus)
             });
         }
 
@@ -50,7 +53,9 @@ public class CarService
 
     public static Task<CarInsuranceQuote> GetEstimate(CarEstimateRequest request)
     {
-        var price = CalculateRandomPrice();
+        var basePrice = GenerateBasePrice();
+        var bonus = 70; // Standard startbonus for estimates
+        var price = CalculatePremium(basePrice, bonus);
 
         return Task.FromResult(new CarInsuranceQuote
         {
@@ -60,19 +65,25 @@ public class CarService
             Year = request.Year,
             InsurancePrice = price,
             Coverage = "Kasko",
-            Bonus = 70,
+            Bonus = bonus,
             Deductible = 4000,
-            CoverageOptions = GenerateCoverageOptions(price)
+            CoverageOptions = GenerateCoverageOptions(basePrice, bonus)
         });
     }
 
-
-
-    private static int CalculateRandomPrice()
+    private static int GenerateBasePrice()
     {
         var random = new Random();
-        var price = 350 + random.Next(600);
-        return price / 5 * 5;
+        // Genererer en grunnpris før bonus (typisk 1500 - 4500)
+        return 1500 + random.Next(3000);
+    }
+
+    private static int CalculatePremium(int basePrice, int bonus = 0)
+    {
+        // Enkel prismodell: Reduserer prisen med bonus-prosenten
+        decimal multiplier = 1.0m - (bonus / 100.0m);
+        var price = basePrice * multiplier;
+        return (int)price;
     }
 
     private static string FormatRegNumber(string regNumber)
@@ -81,20 +92,22 @@ public class CarService
         return clean.Length >= 3 ? $"{clean[..2]} {clean[2..]}" : clean;
     }
 
-    private static List<CoverageOption> GenerateCoverageOptions(int kaskoPrice)
+    private static List<CoverageOption> GenerateCoverageOptions(int basePrice, int bonus)
     {
+        var kaskoPrice = CalculatePremium(basePrice, bonus);
+        
         return
         [
             new()
             {
                 Name = "Ansvar",
-                Price = (int)(kaskoPrice * 0.6),
+                Price = (int)(kaskoPrice * 0.6), // Ansvar er billigere
                 Description = "Dekker skade på andres kjøretøy, eiendom og personer."
             },
             new()
             {
                 Name = "Delkasko",
-                Price = (int)(kaskoPrice * 0.8),
+                Price = (int)(kaskoPrice * 0.8), // Delkasko er litt billigere enn kasko
                 Description = "Inkluderer ansvar, pluss tyveri, brann, og glasskade."
             },
             new()
