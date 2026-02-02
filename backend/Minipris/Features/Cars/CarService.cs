@@ -73,15 +73,14 @@ public class CarService
 
     private static int GenerateBasePrice()
     {
-        var random = new Random();
         // Genererer en grunnpris før bonus (typisk 1500 - 4500)
-        return 1500 + random.Next(3000);
+        return 1500 + Random.Shared.Next(3000);
     }
 
     private static int CalculatePremium(int basePrice, int bonus = 0)
     {
         // Enkel prismodell: Reduserer prisen med bonus-prosenten
-        decimal multiplier = 1.0m - (bonus / 100.0m);
+        var multiplier = 1.0m - (bonus / 100.0m);
         var price = basePrice * multiplier;
         return (int)price;
     }
@@ -101,13 +100,13 @@ public class CarService
             new()
             {
                 Name = "Ansvar",
-                Price = (int)(kaskoPrice * 0.6), // Ansvar er billigere
+                Price = (int)(kaskoPrice * 0.6),
                 Description = "Dekker skade på andres kjøretøy, eiendom og personer."
             },
             new()
             {
                 Name = "Delkasko",
-                Price = (int)(kaskoPrice * 0.8), // Delkasko er litt billigere enn kasko
+                Price = (int)(kaskoPrice * 0.8),
                 Description = "Inkluderer ansvar, pluss tyveri, brann, og glasskade."
             },
             new()
