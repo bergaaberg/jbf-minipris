@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Minipris.Features.Cars.Models;
 using Minipris.Features.Cars.Requests;
 
 namespace Minipris.Features.Cars;
@@ -19,7 +20,7 @@ public static class CarsEndpoints
             .WithDescription("Hent prisestimat ved å legge inn bilinfo manuelt");
     }
 
-    private static async Task<Results<Ok<Models.CarInsuranceQuote>, NotFound>> GetQuote(
+    private static async Task<Results<Ok<CarInsuranceQuote>, NotFound>> GetQuote(
         [FromRoute] string regNumber,
         [FromServices] CarService carService)
     {
@@ -33,8 +34,8 @@ public static class CarsEndpoints
         return TypedResults.Ok(quote);
     }
 
-    private static async Task<Ok<Models.CarInsuranceQuote>> GetEstimate(
-        [FromBody] CarEstimateRequest request,
+    private static async Task<Ok<CarInsuranceQuote>> GetEstimate(
+        [FromBody] CarPriceEstimateRequest request,
         [FromServices] CarService carService)
     {
         var quote = await CarService.GetEstimate(request);

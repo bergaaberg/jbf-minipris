@@ -51,7 +51,7 @@ public class CarService
         return Task.FromResult<CarInsuranceQuote?>(null);
     }
 
-    public static Task<CarInsuranceQuote> GetEstimate(CarEstimateRequest request)
+    public static Task<CarInsuranceQuote> GetEstimate(CarPriceEstimateRequest request)
     {
         var basePrice = GenerateBasePrice();
         var bonus = 70; // Standard startbonus for estimates
