@@ -33,7 +33,7 @@ describe('AppComponent', () => {
 
     it('should format yearly price correctly', () => {
         const formatted = component.formatYearlyPrice(100);
-        expect(formatted).toBe('1 200 kr/år');
+        expect(formatted.replace(/\s/g, ' ')).toBe('1 200 kr/år');
     });
 
     it('should calculate yearly from monthly price', () => {
