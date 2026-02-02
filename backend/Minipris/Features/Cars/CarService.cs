@@ -28,47 +28,54 @@ public class CarService
         var normalized = regNumber.Replace(" ", "").ToUpperInvariant();
         var car = Cars.FirstOrDefault(c => c.RegNumber == normalized);
 
-        if (car is not null)
-        {
-            var basePrice = BasePrices.GetValueOrDefault(normalized, GenerateBasePrice());
-            var bonus = 70; // Standard startbonus
-            var price = CalculatePremium(basePrice, bonus);
+        if (car is null)
+            return Task.FromResult<CarInsuranceQuote?>(null);
 
-            return Task.FromResult<CarInsuranceQuote?>(new CarInsuranceQuote
-            {
-                RegNumber = FormatRegNumber(car.RegNumber),
-                Make = car.Make,
-                Model = car.Model,
-                Year = car.Year,
-                InsurancePrice = price,
-                Coverage = "Kasko",
-                Bonus = bonus,
-                Deductible = 4000,
-                CoverageOptions = GenerateCoverageOptions(basePrice, bonus)
-            });
-        }
+        // Build internal request with assumptions based on reg number lookup
+        var priceRequest = new PriceRequest(
+            Make: car.Make,
+            Model: car.Model,
+            Year: car.Year,
+            Bonus: 70, // Standard startbonus
+            RegNumber: normalized
+        );
 
-        return Task.FromResult<CarInsuranceQuote?>(null);
+        var basePrice = BasePrices.GetValueOrDefault(normalized, GenerateBasePrice());
+        return Task.FromResult<CarInsuranceQuote?>(BuildQuote(priceRequest, basePrice));
     }
 
     public static Task<CarInsuranceQuote> GetEstimate(CarPriceEstimateRequest request)
     {
-        var basePrice = GenerateBasePrice();
-        var bonus = 70; // Standard startbonus for estimates
-        var price = CalculatePremium(basePrice, bonus);
+        // Build internal request from user-provided parameters
+        var priceRequest = new PriceRequest(
+            Make: request.Make,
+            Model: request.Model,
+            Year: request.Year,
+            Bonus: 70 // Standard startbonus for estimates
+        );
 
-        return Task.FromResult(new CarInsuranceQuote
+        var basePrice = GenerateBasePrice();
+        return Task.FromResult(BuildQuote(priceRequest, basePrice));
+    }
+
+    private static CarInsuranceQuote BuildQuote(PriceRequest request, int basePrice)
+    {
+        var price = CalculatePremium(basePrice, request.Bonus);
+
+        return new CarInsuranceQuote
         {
-            RegNumber = "ESTIMAT",
+            RegNumber = request.RegNumber is not null
+                ? FormatRegNumber(request.RegNumber)
+                : "ESTIMAT",
             Make = request.Make,
             Model = request.Model,
             Year = request.Year,
             InsurancePrice = price,
             Coverage = "Kasko",
-            Bonus = bonus,
+            Bonus = request.Bonus,
             Deductible = 4000,
-            CoverageOptions = GenerateCoverageOptions(basePrice, bonus)
-        });
+            CoverageOptions = GenerateCoverageOptions(basePrice, request.Bonus)
+        };
     }
 
     private static int GenerateBasePrice()
