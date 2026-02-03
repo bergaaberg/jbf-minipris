@@ -40,15 +40,21 @@ describe('AppComponent', () => {
 
     it('should calculate yearly from monthly price', () => {
         const yearly = component.formatYearlyPrice(50);
-        expect(yearly).toBe('500 kr/år');
+        expect(yearly.replace(/\s/g, ' ')).toBe('600 kr/år');
     });
 
     it('should have correct number of bonus options', () => {
-        expect(component.bonusOptions.length).toBe(8);
+        expect(component.bonusOptions.length).toBe(9);
     });
 
-    it('should include max bonus of 80%', () => {
-        expect(component.bonusOptions).toContain(80);
+    it('should include max bonus of 75%', () => {
+        expect(component.bonusOptions).toContain(75);
+    });
+
+    it('should format currency correctly', () => {
+        const formatted = component.formatCurrency(4000);
+        // Normalize whitespace for consistency
+        expect(formatted.replace(/\s/g, ' ')).toBe('4 000 kr');
     });
 
     it('should validate contact form requires both phone and email', () => {
@@ -73,7 +79,7 @@ describe('AppComponent', () => {
         component.regInput.set('ab 12345');
         component.onSubmit();
 
-        const req = httpMock.expectOne('/api/bilforsikring/ab12345/tilbud');
+        const req = httpMock.expectOne('/api/bilforsikring/AB12345/tilbud');
         expect(req.request.method).toBe('GET');
 
         req.flush({
@@ -91,11 +97,11 @@ describe('AppComponent', () => {
         expect(component.result()?.make).toBe('Toyota');
     });
 
-    it('should set loading state to false before API call completes', () => {
+    it('should set loading state to true during API call and false after completion', () => {
         component.regInput.set('CD67890');
         component.onSubmit();
 
-        expect(component.isLoading()).toBe(false);
+        expect(component.isLoading()).toBe(true);
 
         const req = httpMock.expectOne('/api/bilforsikring/CD67890/tilbud');
         req.flush({
@@ -109,5 +115,7 @@ describe('AppComponent', () => {
             deductible: 6000,
             coverageOptions: []
         });
+
+        expect(component.isLoading()).toBe(false);
     });
 });

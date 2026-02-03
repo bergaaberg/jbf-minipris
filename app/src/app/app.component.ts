@@ -53,6 +53,12 @@ export class AppComponent {
   bonusOptions = [0, 10, 20, 30, 40, 50, 60, 70, 75];
   selectedBonus = signal(70);
 
+  // Estimate form for when user can't find car
+  showEstimateForm = signal(false);
+  estimateMake = signal('');
+  estimateModel = signal('');
+  estimateYear = signal<number | null>(null); estimateMileage = signal<number | null>(8000); isEstimating = signal(false);
+
   onSubmit(): void {
     const regNumber = this.regInput().replace(/\s/g, '').toUpperCase();
     if (!regNumber) return;
@@ -70,13 +76,28 @@ export class AppComponent {
         this.isLoading.set(false);
         this.hasSearched.set(true);
       },
-      error: (err) => {
-        this.error.set('Kunne ikke hente pristilbud. Prøv igjen senere.');
+      error: (err: any) => {
+        if (err?.status === 404) {
+          this.error.set('Fant ingen bil med dette registreringsnummeret.');
+        } else {
+          this.error.set('Kunne ikke hente pristilbud. Prøv igjen senere.');
+        }
+
         this.isLoading.set(false);
         this.hasSearched.set(true);
         console.error('Error fetching quote:', err);
       }
     });
+  }
+
+  toggleEstimateForm(): void {
+    const next = !this.showEstimateForm();
+    this.showEstimateForm.set(next);
+    if (next) {
+      this.hasSearched.set(false);
+      this.result.set(null);
+      this.error.set(null);
+    }
   }
 
   onContactSubmit(): void {
@@ -103,15 +124,52 @@ export class AppComponent {
     });
   }
 
+  onEstimateSubmit(): void {
+    if (!this.estimateMake() || !this.estimateModel() || !this.estimateYear() || !this.estimateMileage()) return;
+
+    this.isEstimating.set(true);
+    this.hasSearched.set(false);
+    this.result.set(null);
+    this.error.set(null);
+
+    const payload = {
+      make: this.estimateMake(),
+      model: this.estimateModel(),
+      year: Number(this.estimateYear()),
+      mileage: Number(this.estimateMileage())
+    } as any;
+
+    this.http.post<CarInsuranceQuote>(`${this.apiUrl}/bilforsikring/estimat`, payload).subscribe({
+      next: (quote) => {
+        this.result.set(quote);
+        this.selectedBonus.set(quote.bonus);
+        this.isEstimating.set(false);
+        this.hasSearched.set(true);
+        this.showEstimateForm.set(false);
+      },
+      error: (err) => {
+        this.error.set('Kunne ikke hente pristilbud. Prøv igjen senere.');
+        this.isEstimating.set(false);
+        this.hasSearched.set(true);
+        console.error('Error fetching estimate:', err);
+      }
+    });
+  }
+
   formatPrice(price: number): string {
     return price.toLocaleString('nb-NO') + ' kr/mnd';
   }
 
   formatYearlyPrice(monthlyPrice: number): string {
-    return (monthlyPrice * 12).toLocaleString('nb-NO') + ' kr/år';
+    const yearly = monthlyPrice * 12;
+    return yearly.toLocaleString('nb-NO').replace(/\u00A0/g, ' ') + ' kr/år';
+  }
+
+  formatCurrency(amount: number): string {
+    return amount.toLocaleString('nb-NO').replace(/\u00A0/g, ' ') + ' kr';
   }
 
   get isContactFormValid(): boolean {
-    return !!(this.phoneNumber() || this.email());
+    return !!(this.phoneNumber() && this.email());
   }
 }

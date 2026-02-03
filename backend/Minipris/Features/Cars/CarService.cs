@@ -36,6 +36,7 @@ public class CarService
             Make: car.Make,
             Model: car.Model,
             Year: car.Year,
+            Mileage: 8000, // Default mileage
             Bonus: 70, // Standard startbonus
             RegNumber: normalized
         );
@@ -44,23 +45,24 @@ public class CarService
         return Task.FromResult<CarInsuranceQuote?>(BuildQuote(priceRequest, basePrice));
     }
 
-    public static Task<CarInsuranceQuote> GetEstimate(CarPriceEstimateRequest request)
+    public static Task<CarInsuranceQuote> GetEstimate(CarPriceEstimateRequest request, int? basePrice = null)
     {
         // Build internal request from user-provided parameters
         var priceRequest = new PriceRequest(
             Make: request.Make,
             Model: request.Model,
             Year: request.Year,
+            Mileage: request.Mileage,
             Bonus: 70 // Standard startbonus for estimates
         );
 
-        var basePrice = GenerateBasePrice();
-        return Task.FromResult(BuildQuote(priceRequest, basePrice));
+        var bp = basePrice ?? GenerateBasePrice();
+        return Task.FromResult(BuildQuote(priceRequest, bp));
     }
 
     private static CarInsuranceQuote BuildQuote(PriceRequest request, int basePrice)
     {
-        var price = CalculatePremium(basePrice, request.Bonus);
+        var price = CalculatePremium(basePrice, request.Bonus, request.Mileage);
 
         return new CarInsuranceQuote
         {
@@ -84,12 +86,24 @@ public class CarService
         return 1500 + Random.Shared.Next(3000);
     }
 
-    private static int CalculatePremium(int basePrice, int bonus = 0)
+    private static int CalculatePremium(int basePrice, int bonus = 0, int mileage = 8000)
     {
-        // Enkel prismodell: Reduserer prisen med bonus-prosenten
         var multiplier = 1.0m - (bonus / 100.0m);
         var price = basePrice * multiplier;
-        return (int)price;
+
+        switch (mileage)
+        {
+            case <= 8000:
+                break;
+            case <= 12000:
+                price *= 1.1m;
+                break;
+            default:
+                price *= 1.2m;
+                break;
+        }
+
+        return (int)Math.Round(price);
     }
 
     private static string FormatRegNumber(string regNumber)
@@ -101,7 +115,7 @@ public class CarService
     private static List<CoverageOption> GenerateCoverageOptions(int basePrice, int bonus)
     {
         var kaskoPrice = CalculatePremium(basePrice, bonus);
-        
+
         return
         [
             new()
