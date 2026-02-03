@@ -25,7 +25,50 @@
         Få pris
         }
       </button>
+
+      <button type="button" class="estimate-link" (click)="toggleEstimateForm()">
+        Finner ikke bilen din?
+      </button>
     </form>
+
+    @if (showEstimateForm()) {
+    <form (ngSubmit)="onEstimateSubmit()" class="estimate-form">
+      <div class="input-row">
+        <div class="input-field">
+          <label for="make">Merke</label>
+          <input id="make" [(ngModel)]="estimateMake" name="make" placeholder="F.eks. Toyota" />
+        </div>
+        <div class="input-field">
+          <label for="model">Modell</label>
+          <input id="model" [(ngModel)]="estimateModel" name="model" placeholder="F.eks. Rav4" />
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-field">
+          <label for="year">Årsmodell</label>
+          <input type="number" id="year" [(ngModel)]="estimateYear" name="year" placeholder="F.eks. 2020" />
+        </div>
+        <div class="input-field">
+          <label for="mileage">Årlig kilometerstand</label>
+          <input type="number" id="mileage" [(ngModel)]="estimateMileage" name="mileage" placeholder="F.eks. 8000" />
+        </div>
+      </div>
+
+      <div class="estimate-actions">
+        <button type="submit" class="submit-btn estimate-submit"
+          [disabled]="isEstimating() || !estimateMake() || !estimateModel() || !estimateYear() || !estimateMileage()">
+          @if (isEstimating()) {
+          <span class="loading-spinner"></span>
+          Henter...
+          } @else {
+          Få estimat
+          }
+        </button>
+        <button type="button" class="estimate-cancel" (click)="showEstimateForm.set(false)">Avbryt</button>
+      </div>
+    </form>
+    }
 
     @if (error()) {
     <div class="error-card">
@@ -62,7 +105,28 @@
               }
             </select>
           </div>
+
+          <div class="detail-row">
+            <label>Egenandel</label>
+            <div class="detail-value">{{ formatCurrency(result()!.deductible) }}</div>
+          </div>
+
+          <div class="coverage-options">
+            <h4>Tilleggsdekninger</h4>
+            <ul>
+              @for (opt of result()!.coverageOptions; track opt) {
+              <li class="coverage-option">
+                <div class="option-row">
+                  <span class="option-name">{{ opt.name }}</span>
+                  <span class="option-price">{{ formatPrice(opt.price) }}</span>
+                </div>
+                <div class="option-desc">{{ opt.description }}</div>
+              </li>
+              }
+            </ul>
+          </div>
         </div>
+
         <div class="price-section">
           <span class="price-label">Månedspris fra</span>
           <span class="price-value">{{ formatPrice(result()!.insurancePrice) }}</span>

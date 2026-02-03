@@ -76,6 +76,96 @@ h1 {
   margin-bottom: 2rem;
 }
 
+.estimate-link {
+  background: transparent;
+  border: none;
+  color: $primary;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.estimate-form {
+  margin-top: 1rem;
+  text-align: left;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba($primary, 0.06);
+}
+
+.estimate-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.estimate-cancel {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: white;
+  background: $accent;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.estimate-cancel:hover:not(:disabled) {
+  background: #e5471b;
+}
+
+.estimate-cancel:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.estimate-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.estimate-submit {
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 24px;
+}
+
+.mileage-select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border: 2px solid white;
+  border-radius: 12px;
+  background: white;
+  color: $text;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23333333' d='M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z'/%3E%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+
+  &:hover {
+    border-color: $primary;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.1);
+  }
+}
+
 .input-group {
   position: relative;
 }
@@ -195,6 +285,7 @@ h1 {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -266,6 +357,66 @@ h1 {
     font-size: 0.875rem;
     color: #666;
     margin-bottom: 0.5rem;
+  }
+
+  .detail-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+
+    .detail-value {
+      font-weight: 700;
+      color: $sea-dark;
+    }
+  }
+
+  .coverage-options {
+    margin-top: 0.75rem;
+
+    h4 {
+      margin: 0 0 0.5rem;
+      font-size: 0.9375rem;
+      color: $primary;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .coverage-option {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 0.75rem;
+
+      .option-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .option-name {
+        font-weight: 600;
+        color: $sea-dark;
+      }
+
+      .option-price {
+        font-weight: 700;
+        color: $accent;
+      }
+
+      .option-desc {
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+        color: #666;
+      }
+    }
   }
 }
 

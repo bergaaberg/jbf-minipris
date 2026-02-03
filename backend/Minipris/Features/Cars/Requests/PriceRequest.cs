@@ -8,6 +8,7 @@ public record PriceRequest(
     string Make,
     string Model,
     int Year,
+    int Mileage,
     int Bonus = 70,
     string? RegNumber = null
 );
