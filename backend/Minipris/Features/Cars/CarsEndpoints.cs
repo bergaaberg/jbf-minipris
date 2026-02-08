@@ -22,15 +22,22 @@ public static class CarsEndpoints
 
     private static async Task<Results<Ok<CarInsuranceQuote>, NotFound>> GetQuote(
         [FromRoute] string regNumber,
+        [FromServices] CarInfoService carInfoService,
         [FromServices] CarService carService)
     {
-        var quote = await CarService.GetQuote(regNumber);
+        var car = carInfoService.GetCar(regNumber);
 
-        if (quote is null)
-        {
+        if (car is null)
             return TypedResults.NotFound();
-        }
 
+        var request = new PriceRequest(
+            Make: car.Make,
+            Model: car.Model,
+            Year: car.Year,
+            RegNumber: CarInfoService.NormalizeRegNumber(regNumber)
+        );
+
+        var quote = await carService.GetQuote(request);
         return TypedResults.Ok(quote);
     }
 
@@ -38,7 +45,13 @@ public static class CarsEndpoints
         [FromBody] CarPriceEstimateRequest request,
         [FromServices] CarService carService)
     {
-        var quote = await CarService.GetEstimate(request);
+        var priceRequest = new PriceRequest(
+            Make: request.Make,
+            Model: request.Model,
+            Year: request.Year
+        );
+
+        var quote = await carService.GetEstimate(priceRequest);
         return TypedResults.Ok(quote);
     }
 }

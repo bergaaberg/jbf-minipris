@@ -51,16 +51,17 @@ Angular-appen vil starte på `http://localhost:4200` og videresende API-forespø
 
 ## API-endepunkter
 
-- `GET /api/cars/{regNumber}/quote` - Hent forsikringstilbud for en bil
-- `POST /api/contact` - Send kontaktskjema
+- `GET /api/bilforsikring/{regNumber}/tilbud` - Hent forsikringstilbud for en bil
+- `POST /api/bilforsikring/estimat` - Hent prisestimat ved å legge inn bilinfo manuelt
+- `POST /api/kontakt-meg` - Send kontaktforespørsel
 
 ## Mock-data
 
 Følgende registreringsnumre har forhåndsdefinerte data:
-- AB12345 - Toyota RAV4 (2020)
-- CD67890 - Volkswagen Golf (2019)
+- AB12345 - Toyota Rav4 (2020)
+- CD67890 - Volkswagen Golf (2012)
 - EF11111 - Tesla Model 3 (2022)
-- GH22222 - Volvo XC60 (2021)
-- IJ33333 - BMW 3-serie (2018)
+- GH22222 - Nissan Qashqai (2018)
+- EC55555 - Hyundai Kona (2021)
 
-Andre registreringsnumre vil returnere tilfeldig genererte bildata.
+Ukjente registreringsnumre returnerer 404.

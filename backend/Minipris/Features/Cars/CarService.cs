@@ -3,59 +3,21 @@ using Minipris.Features.Cars.Requests;
 
 namespace Minipris.Features.Cars;
 
-public class CarService
+public class CarService(CarInfoService carInfoService)
 {
-    private static readonly List<Car> Cars =
-    [
-        new(RegNumber: "AB12345", Make: "Toyota", Model: "Rav4", Year: 2020),
-        new(RegNumber: "CD67890", Make: "Volkswagen", Model: "Golf", Year: 2012),
-        new(RegNumber: "EF11111", Make: "Tesla", Model: "Model 3", Year: 2022),
-        new(RegNumber: "GH22222", Make: "Nissan", Model: "Qashqai", Year: 2018),
-        new(RegNumber: "EC55555", Make: "Hyundai", Model: "Kona", Year: 2021)
-    ];
-
-    private static readonly Dictionary<string, int> BasePrices = new()
+    public Task<CarInsuranceQuote> GetQuote(PriceRequest request)
     {
-        ["AB12345"] = 2400,
-        ["CD67890"] = 1650,
-        ["EF11111"] = 3200,
-        ["GH22222"] = 2600,
-        ["IJ33333"] = 2100
-    };
+        var basePrice = request.RegNumber is not null
+            ? carInfoService.GetBasePrice(request.RegNumber) ?? GenerateBasePrice()
+            : GenerateBasePrice();
 
-    public static Task<CarInsuranceQuote?> GetQuote(string regNumber)
-    {
-        var normalized = regNumber.Replace(" ", "").ToUpperInvariant();
-        var car = Cars.FirstOrDefault(c => c.RegNumber == normalized);
-
-        if (car is null)
-            return Task.FromResult<CarInsuranceQuote?>(null);
-
-        // Build internal request with assumptions based on reg number lookup
-        var priceRequest = new PriceRequest(
-            Make: car.Make,
-            Model: car.Model,
-            Year: car.Year,
-            Bonus: 70, // Standard startbonus
-            RegNumber: normalized
-        );
-
-        var basePrice = BasePrices.GetValueOrDefault(normalized, GenerateBasePrice());
-        return Task.FromResult<CarInsuranceQuote?>(BuildQuote(priceRequest, basePrice));
+        return Task.FromResult(BuildQuote(request, basePrice));
     }
 
-    public static Task<CarInsuranceQuote> GetEstimate(CarPriceEstimateRequest request)
+    public Task<CarInsuranceQuote> GetEstimate(PriceRequest request)
     {
-        // Build internal request from user-provided parameters
-        var priceRequest = new PriceRequest(
-            Make: request.Make,
-            Model: request.Model,
-            Year: request.Year,
-            Bonus: 70 // Standard startbonus for estimates
-        );
-
         var basePrice = GenerateBasePrice();
-        return Task.FromResult(BuildQuote(priceRequest, basePrice));
+        return Task.FromResult(BuildQuote(request, basePrice));
     }
 
     private static CarInsuranceQuote BuildQuote(PriceRequest request, int basePrice)
@@ -65,7 +27,7 @@ public class CarService
         return new CarInsuranceQuote
         {
             RegNumber = request.RegNumber is not null
-                ? FormatRegNumber(request.RegNumber)
+                ? CarInfoService.FormatRegNumber(request.RegNumber)
                 : "ESTIMAT",
             Make = request.Make,
             Model = request.Model,
@@ -78,30 +40,19 @@ public class CarService
         };
     }
 
-    private static int GenerateBasePrice()
-    {
-        // Genererer en grunnpris før bonus (typisk 1500 - 4500)
-        return 1500 + Random.Shared.Next(3000);
-    }
+    private static int GenerateBasePrice() => 1500 + Random.Shared.Next(3000);
 
     private static int CalculatePremium(int basePrice, int bonus = 0)
     {
-        // Enkel prismodell: Reduserer prisen med bonus-prosenten
         var multiplier = 1.0m - (bonus / 100.0m);
         var price = basePrice * multiplier;
         return (int)price;
     }
 
-    private static string FormatRegNumber(string regNumber)
-    {
-        var clean = regNumber.Replace(" ", "").ToUpperInvariant();
-        return clean.Length >= 3 ? $"{clean[..2]} {clean[2..]}" : clean;
-    }
-
     private static List<CoverageOption> GenerateCoverageOptions(int basePrice, int bonus)
     {
         var kaskoPrice = CalculatePremium(basePrice, bonus);
-        
+
         return
         [
             new()
