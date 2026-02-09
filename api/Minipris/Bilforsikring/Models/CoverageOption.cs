@@ -1,4 +1,4 @@
-namespace Minipris.Features.Cars.Models;
+namespace Minipris.Bilforsikring.Models;
 
 public record CoverageOption
 {

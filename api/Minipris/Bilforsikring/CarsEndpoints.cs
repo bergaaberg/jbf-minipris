@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Minipris.Features.Cars.Models;
-using Minipris.Features.Cars.Requests;
+using Minipris.Bilforsikring.Models;
+using Minipris.Bilforsikring.Requests;
 
-namespace Minipris.Features.Cars;
+namespace Minipris.Bilforsikring;
 
 public static class CarsEndpoints
 {
@@ -22,19 +22,19 @@ public static class CarsEndpoints
 
     private static async Task<Results<Ok<CarInsuranceQuote>, NotFound>> GetQuote(
         [FromRoute] string regNumber,
-        [FromServices] CarInfoService carInfoService,
+        [FromServices] CarInfoRepository carInfoRepository,
         [FromServices] CarService carService)
     {
-        var car = carInfoService.GetCar(regNumber);
+        var car = carInfoRepository.GetCar(regNumber);
 
         if (car is null)
             return TypedResults.NotFound();
 
         var request = new PriceRequest(
-            Make: car.Make,
-            Model: car.Model,
-            Year: car.Year,
-            RegNumber: CarInfoService.NormalizeRegNumber(regNumber)
+            car.Make,
+            car.Model,
+            car.Year,
+            RegNumber: CarInfoRepository.NormalizeRegNumber(regNumber)
         );
 
         var quote = await carService.GetQuote(request);
@@ -46,9 +46,9 @@ public static class CarsEndpoints
         [FromServices] CarService carService)
     {
         var priceRequest = new PriceRequest(
-            Make: request.Make,
-            Model: request.Model,
-            Year: request.Year
+            request.Make,
+            request.Model,
+            request.Year
         );
 
         var quote = await carService.GetEstimate(priceRequest);

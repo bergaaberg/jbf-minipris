@@ -1,4 +1,4 @@
-namespace Minipris.Features.Contact;
+namespace Minipris.Kontaktskjema;
 
 public static class ContactDependencyRegistration
 {

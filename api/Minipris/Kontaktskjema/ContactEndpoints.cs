@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Minipris.Features.Contact.Requests;
+using Minipris.Kontaktskjema.Requests;
 
-namespace Minipris.Features.Contact;
+namespace Minipris.Kontaktskjema;
 
 public static class ContactEndpoints
 {

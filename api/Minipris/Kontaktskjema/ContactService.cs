@@ -1,6 +1,6 @@
-using Minipris.Features.Contact.Requests;
+using Minipris.Kontaktskjema.Requests;
 
-namespace Minipris.Features.Contact;
+namespace Minipris.Kontaktskjema;
 
 public class ContactService(ILogger<ContactService> logger)
 {

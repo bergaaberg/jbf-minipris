@@ -1,4 +1,4 @@
-namespace Minipris.Features.Cars.Models;
+namespace Minipris.Bilforsikring.Models;
 
 public record CarInsuranceQuote
 {
@@ -8,7 +8,7 @@ public record CarInsuranceQuote
     public required int Year { get; init; }
     public required int InsurancePrice { get; init; }
     public required string Coverage { get; init; }
-    
+
     public required int Bonus { get; init; }
     public required int Deductible { get; init; }
     public required List<CoverageOption> CoverageOptions { get; init; }

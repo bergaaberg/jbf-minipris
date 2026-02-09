@@ -1,4 +1,4 @@
-namespace Minipris.Features.Cars.Requests;
+namespace Minipris.Bilforsikring.Requests;
 
 public record PriceRequest(
     string Make,

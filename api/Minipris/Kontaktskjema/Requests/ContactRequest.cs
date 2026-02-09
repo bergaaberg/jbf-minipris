@@ -1,4 +1,4 @@
-namespace Minipris.Features.Contact.Requests;
+namespace Minipris.Kontaktskjema.Requests;
 
 public record ContactRequest
 {

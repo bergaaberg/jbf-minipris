@@ -1,16 +1,16 @@
-using Minipris.Features.Cars.Models;
+using Minipris.Bilforsikring.Models;
 
-namespace Minipris.Features.Cars;
+namespace Minipris.Bilforsikring;
 
-public class CarInfoService
+public class CarInfoRepository
 {
     private static readonly List<Car> Cars =
     [
-        new(RegNumber: "AB12345", Make: "Toyota", Model: "Rav4", Year: 2020),
-        new(RegNumber: "CD67890", Make: "Volkswagen", Model: "Golf", Year: 2012),
-        new(RegNumber: "EF11111", Make: "Tesla", Model: "Model 3", Year: 2022),
-        new(RegNumber: "GH22222", Make: "Nissan", Model: "Qashqai", Year: 2018),
-        new(RegNumber: "EC55555", Make: "Hyundai", Model: "Kona", Year: 2021)
+        new("AB12345", "Toyota", "Rav4", 2020),
+        new("CD67890", "Volkswagen", "Golf", 2012),
+        new("EF11111", "Tesla", "Model 3", 2022),
+        new("GH22222", "Nissan", "Qashqai", 2018),
+        new("EC55555", "Hyundai", "Kona", 2021)
     ];
 
     private static readonly Dictionary<string, int> BasePrices = new()
@@ -34,8 +34,10 @@ public class CarInfoService
         return BasePrices.TryGetValue(normalized, out var price) ? price : null;
     }
 
-    public static string NormalizeRegNumber(string regNumber) =>
-        regNumber.Replace(" ", "").ToUpperInvariant();
+    public static string NormalizeRegNumber(string regNumber)
+    {
+        return regNumber.Replace(" ", "").ToUpperInvariant();
+    }
 
     public static string FormatRegNumber(string regNumber)
     {

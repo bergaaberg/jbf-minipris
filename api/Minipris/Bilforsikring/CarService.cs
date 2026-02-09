@@ -1,14 +1,14 @@
-using Minipris.Features.Cars.Models;
-using Minipris.Features.Cars.Requests;
+using Minipris.Bilforsikring.Models;
+using Minipris.Bilforsikring.Requests;
 
-namespace Minipris.Features.Cars;
+namespace Minipris.Bilforsikring;
 
-public class CarService(CarInfoService carInfoService)
+public class CarService(CarInfoRepository carInfoRepository)
 {
     public Task<CarInsuranceQuote> GetQuote(PriceRequest request)
     {
         var basePrice = request.RegNumber is not null
-            ? carInfoService.GetBasePrice(request.RegNumber) ?? GenerateBasePrice()
+            ? carInfoRepository.GetBasePrice(request.RegNumber) ?? GenerateBasePrice()
             : GenerateBasePrice();
 
         return Task.FromResult(BuildQuote(request, basePrice));
@@ -27,7 +27,7 @@ public class CarService(CarInfoService carInfoService)
         return new CarInsuranceQuote
         {
             RegNumber = request.RegNumber is not null
-                ? CarInfoService.FormatRegNumber(request.RegNumber)
+                ? CarInfoRepository.FormatRegNumber(request.RegNumber)
                 : "ESTIMAT",
             Make = request.Make,
             Model = request.Model,
@@ -40,11 +40,14 @@ public class CarService(CarInfoService carInfoService)
         };
     }
 
-    private static int GenerateBasePrice() => 1500 + Random.Shared.Next(3000);
+    private static int GenerateBasePrice()
+    {
+        return 1500 + Random.Shared.Next(3000);
+    }
 
     private static int CalculatePremium(int basePrice, int bonus = 0)
     {
-        var multiplier = 1.0m - (bonus / 100.0m);
+        var multiplier = 1.0m - bonus / 100.0m;
         var price = basePrice * multiplier;
         return (int)price;
     }

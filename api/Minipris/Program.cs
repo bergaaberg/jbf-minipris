@@ -1,5 +1,5 @@
-using Minipris.Features.Cars;
-using Minipris.Features.Contact;
+using Minipris.Bilforsikring;
+using Minipris.Kontaktskjema;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +11,8 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins("http://localhost:4200")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
