@@ -33,7 +33,7 @@ jbf-minipris/
 ### Backend (.NET API)
 
 ```bash
-cd backend/Minipris
+cd api/Minipris
 dotnet run
 ```
 
