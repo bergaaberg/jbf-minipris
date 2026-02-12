@@ -15,7 +15,7 @@ jbf-minipris/
 │   ├── package.json
 │   └── proxy.conf.json    # API-proxy for utvikling
 │
-└── backend/
+└── api/
     ├── Minipris/           # .NET minimal API backend
     │   ├── Features/
     │   │   ├── Cars/          # Bilforsikringstilbud
