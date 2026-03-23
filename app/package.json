@@ -9,6 +9,9 @@
     "test": "vitest"
   },
   "private": true,
+  "overrides": {
+    "undici": ">=7.23.1"
+  },
   "dependencies": {
     "@angular/animations": "^21.1.2",
     "@angular/common": "^21.1.2",
