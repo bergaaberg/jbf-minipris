@@ -6,20 +6,20 @@ Applikasjon for pristilbud på bilforsikring med Angular frontend og .NET minima
 
 ```
 jbf-minipris/
-├── app/                    # Angular frontend
+├── app/                                # Angular frontend
 │   ├── src/
-│   │   ├── app/           # Angular-komponenter
-│   │   ├── assets/        # Ikoner, bilder, fonter
-│   │   └── styles.scss    # Globale stiler
+│   │   ├── app/                       # Angular-komponenter
+│   │   ├── assets/                    # Ikoner, bilder, fonter
+│   │   └── styles.scss                # Globale stiler
 │   ├── angular.json
 │   ├── package.json
-│   └── proxy.conf.json    # API-proxy for utvikling
+│   └── proxy.conf.json                # API-proxy for utvikling
 │
 └── api/
-    ├── Minipris/           # .NET minimal API backend
+    ├── Minipris/                       # .NET minimal API backend
     │   ├── Features/
-    │   │   ├── Cars/          # Bilforsikringstilbud
-    │   │   ├── Contact/       # Håndtering av kontaktskjema
+    │   │   ├── Bilforsikring/          # Bilforsikringstilbud
+    │   │   ├── Kontaktskjema/          # Håndtering av kontaktskjema
     │   ├── Properties/
     │   │   └── launchSettings.json
     │   ├── Program.cs
