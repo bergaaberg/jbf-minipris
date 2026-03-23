@@ -17,14 +17,25 @@ jbf-minipris/
 │
 └── api/
     ├── Minipris/                       # .NET minimal API backend
-    │   ├── Features/
-    │   │   ├── Bilforsikring/          # Bilforsikringstilbud
-    │   │   ├── Kontaktskjema/          # Håndtering av kontaktskjema
+    │   ├── Bilforsikring/
+    │   │   ├── Models/                 # Bil, BilPrisdetaljer, Dekningsalternativ
+    │   │   ├── Requests/               # BilPrisanslagRequest
+    │   │   ├── Responses/              # BilforsikringstilbudResponse
+    │   │   ├── Services/               # BilService, BilInfoRepository
+    │   │   ├── Utilities/              # BilforsikringUtilities
+    │   │   ├── BilforsikringEndpoints.cs
+    │   │   └── BilforsikringDependencyRegistration.cs
+    │   ├── Kontaktskjema/
+    │   │   ├── Requests/               # ContactRequest
+    │   │   ├── Services/               # KontaktService
+    │   │   ├── KontaktEndpoints.cs
+    │   │   └── KontaktDependencyRegistration.cs
     │   ├── Properties/
     │   │   └── launchSettings.json
     │   ├── Program.cs
     │   └── Minipris.csproj
-    ├── Tests/
+    ├── Minipris.Tests/
+    │   └── Bilforsikring/              # BilServiceTests, BilInfoRepositoryTests, BilforsikringUtilitiesTests
     └── Minipris.slnx
 ```
 
@@ -49,19 +60,39 @@ npm start
 
 Angular-appen vil starte på `http://localhost:4200` og videresende API-forespørsler til backenden.
 
+## Kjør tester
+
+### Backend
+
+```bash
+cd api/Minipris.Tests
+dotnet run
+```
+
+### Frontend
+
+```bash
+cd app
+npm test
+```
+
 ## API-endepunkter
 
-- `GET /api/bilforsikring/{regNumber}/tilbud` - Hent forsikringstilbud for en bil
+- `GET /api/bilforsikring/{regnummer}/tilbud` - Hent forsikringstilbud for en bil
 - `POST /api/bilforsikring/estimat` - Hent prisestimat ved å legge inn bilinfo manuelt
 - `POST /api/kontakt-meg` - Send kontaktforespørsel
 
-## Mock-data
+## Testdata
 
 Følgende registreringsnumre har forhåndsdefinerte data:
-- AB12345 - Toyota Rav4 (2020)
-- CD67890 - Volkswagen Golf (2012)
-- EF11111 - Tesla Model 3 (2022)
-- GH22222 - Nissan Qashqai (2018)
-- EC55555 - Hyundai Kona (2021)
 
-Ukjente registreringsnumre returnerer 404.
+| Regnummer | Merke      | Modell   | Årsmodell |
+|-----------|------------|----------|-----------|
+| AB12345   | Toyota     | Rav4     | 2020      |
+| CD67890   | Volkswagen | Golf     | 2012      |
+| EF11111   | Tesla      | Model 3  | 2022      |
+| GH22222   | Nissan     | Qashqai  | 2018      |
+| EC55555   | Hyundai    | Kona     | 2021      |
+| IJ33333   | Toyota     | Corolla  | 2019      |
+
+Ukjente registreringsnumre returnerer 404. Regnummer er ikke case-sensitiv og mellomrom ignoreres.
