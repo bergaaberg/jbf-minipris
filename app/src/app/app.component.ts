@@ -2,28 +2,28 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-interface CarInsuranceQuote {
-  regNumber: string;
-  make: string;
-  model: string;
-  year: number;
-  insurancePrice: number;
-  coverage: string;
+interface Bilforsikringstilbud {
+  regnummer: string;
+  merke: string;
+  modell: string;
+  arsmodell: number;
+  forsikringspris: number;
+  dekning: string;
   bonus: number;
-  deductible: number;
-  coverageOptions: CoverageOption[];
+  egenandel: number;
+  dekningsalternativer: Dekningsalternativ[];
 }
 
-interface CoverageOption {
-  name: string;
-  price: number;
-  description: string;
+interface Dekningsalternativ {
+  navn: string;
+  pris: number;
+  beskrivelse: string;
 }
 
 interface ContactRequest {
-  regNumber: string;
-  phoneNumber: string;
-  email: string;
+  regnummer: string;
+  telefonnummer: string;
+  epost: string;
 }
 
 @Component({
@@ -38,7 +38,7 @@ export class AppComponent {
   private apiUrl = '/api';
 
   regInput = signal('');
-  result = signal<CarInsuranceQuote | null>(null);
+  result = signal<Bilforsikringstilbud | null>(null);
   isLoading = signal(false);
   hasSearched = signal(false);
   error = signal<string | null>(null);
@@ -63,10 +63,10 @@ export class AppComponent {
     this.error.set(null);
     this.contactSubmitted.set(false);
 
-    this.http.get<CarInsuranceQuote>(`${this.apiUrl}/bilforsikring/${regNumber}/tilbud`).subscribe({
-      next: (quote) => {
-        this.result.set(quote);
-        this.selectedBonus.set(quote.bonus);
+    this.http.get<Bilforsikringstilbud>(`${this.apiUrl}/bilforsikring/${regNumber}/tilbud`).subscribe({
+      next: (tilbud) => {
+        this.result.set(tilbud);
+        this.selectedBonus.set(tilbud.bonus);
         this.isLoading.set(false);
         this.hasSearched.set(true);
       },
@@ -86,9 +86,9 @@ export class AppComponent {
     this.isSubmittingContact.set(true);
 
     const request: ContactRequest = {
-      regNumber: this.result()!.regNumber.replace(/\s/g, ''),
-      phoneNumber: this.phoneNumber(),
-      email: this.email()
+      regnummer: this.result()!.regnummer.replace(/\s/g, ''),
+      telefonnummer: this.phoneNumber(),
+      epost: this.email()
     };
 
     this.http.post(`${this.apiUrl}/kontakt-meg`, request).subscribe({

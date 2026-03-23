@@ -16,8 +16,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.RegisterCarsDependencies();
-builder.RegisterContactDependencies();
+builder.RegisterBilforsikringDependencies();
+builder.RegisterKontaktDependencies();
 
 var app = builder.Build();
 
@@ -30,7 +30,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 
 var api = app.MapGroup("/api");
-api.MapCarsEndpoints();
-api.MapContactEndpoints();
+api.MapBilforsikringEndpoints();
+api.MapKontaktEndpoints();
 
 app.Run();
